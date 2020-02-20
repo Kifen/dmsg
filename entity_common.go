@@ -2,7 +2,6 @@ package dmsg
 
 import (
 	"context"
-	"github.com/prometheus/common/log"
 	"net/http"
 	"sync"
 
@@ -122,11 +121,12 @@ func (c *EntityCommon) updateServerEntry(ctx context.Context, addr string, s *st
 		if err := entry.Sign(c.sk); err != nil {
 			return err
 		}
-		return c.dc.SetEntry(ctx, entry, http.MethodPost)
+		return c.dc.SetEntry(ctx, entry, http.MethodPost, nil)
 	}
 
 	if s != nil {
-		log.Info("Updating sessions...")
+		c.log.Info("SESSION COUNT = ", entry.Server.AvailableSessions)
+		c.log.Info("Updating server sessions...")
 		entry.Server.AvailableSessions+=1
 		return c.dc.UpdateEntry(ctx, c.sk,entry, &struct{}{})
 	}
@@ -151,7 +151,7 @@ func (c *EntityCommon) updateClientEntry(ctx context.Context, done chan struct{}
 		if err := entry.Sign(c.sk); err != nil {
 			return err
 		}
-		return c.dc.SetEntry(ctx, entry, http.MethodPost)
+		return c.dc.SetEntry(ctx, entry, http.MethodPost, nil)
 	}
 	entry.Client.DelegatedServers = srvPKs
 	c.log.WithField("entry", entry).Info("Updating entry.")

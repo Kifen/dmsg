@@ -110,7 +110,10 @@ func (r *redisStore) AvailableServers(ctx context.Context, maxCount int) ([]*dis
 			log.WithError(err).Warnf("Failed to unmarshal payload %s", payload.(string))
 			continue
 		}
-		entries = append(entries, entry)
+
+		if entry.Server.AvailableSessions < entry.Server.AvailableConnections {
+			entries = append(entries, entry)
+		}
 	}
 
 	return entries, nil
