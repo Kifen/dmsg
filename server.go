@@ -113,10 +113,6 @@ func (s *Server) updateEntryLoop(addr string) error {
 	})
 }
 
-func (s *Server) updateServerSession(addr string) error {
-
-}
-
 func (s *Server) handleSession(conn net.Conn) {
 	var log logrus.FieldLogger //nolint:gosimple
 	log = s.log.WithField("remote_tcp", conn.RemoteAddr())
